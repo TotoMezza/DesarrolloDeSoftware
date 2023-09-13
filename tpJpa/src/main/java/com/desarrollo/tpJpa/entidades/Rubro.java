@@ -28,6 +28,7 @@ public class Rubro extends BaseEntidad{
     }
 
     public void mostrarProducto(){
+        System.out.println("Los productos de este Rubro son:");
         for (Producto producto: productos){
             System.out.println("Denominación:" + producto.getDenominacion() + " Tipo de Producto: " + producto.getTipoProducto() + " Receta: " + producto.getReceta() );
         }
