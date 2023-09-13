@@ -40,6 +40,47 @@ public class TpJpaApplication {
 		return args -> {
 			System.out.println("-----------ESTOY CANSADO JEFE----------");
 
+			Rubro rubro1 = Rubro.builder()
+					.denominacion("Sanguches")
+					.build();
+
+			Producto producto1 = Producto.builder()
+					.denominacion("Sanguches de Miga")
+					.unidadMedida("1 docena")
+					.precioCompra(1000.0)
+					.precioVenta(2700.0)
+					.receta("pan de miga, con jamón cocido y queso de máquina")
+					.stockActual(20)
+					.stockMinimo(5)
+					.tipoProducto(TipoProducto.MANUFACTURADO)
+					.tiempoEstimadoCocina(10)
+					.build();
+			Producto producto2 = Producto.builder()
+					.denominacion("Pebete")
+					.unidadMedida("1 unidad")
+					.precioCompra(700.0)
+					.precioVenta(1200.0)
+					.receta("Pan de leche, con jamón cocido, queso gouda y un poco de mostaza")
+					.stockActual(50)
+					.stockMinimo(5)
+					.tipoProducto(TipoProducto.MANUFACTURADO)
+					.tiempoEstimadoCocina(7)
+					.build();
+
+
+			rubro1.agregarProducto(producto1);
+			rubro1.agregarProducto(producto2);
+
+			rubroRepositorio.save(rubro1);
+
+			Rubro rubroRecuperado = rubroRepositorio.findById(rubro1.getId()) .orElse(null);
+
+			if (rubroRecuperado != null) {
+				System.out.println("Denominación: " + rubroRecuperado.getDenominacion());
+				rubroRecuperado.mostrarProducto();
+			}
+
+			
 			Domicilio domicilio1 = Domicilio.builder()
 					.calle("Ozamis")
 					.numero("1000")
@@ -73,65 +114,12 @@ public class TpJpaApplication {
 				clienteRecuperado.mostrarDomicilios();
 			}
 
-
-			Producto producto1 = Producto.builder()
-					.denominacion("Sanguches de Miga")
-					.unidadMedida("1 docena")
-					.precioCompra(1000.0)
-					.precioVenta(2700.0)
-					.receta("pan de miga, con jamón cocido y queso de máquina")
-					.stockActual(20)
-					.stockMinimo(5)
-					.tipoProducto(TipoProducto.MANUFACTURADO)
-					.tiempoEstimadoCocina(10)
-					.build();
-			Producto producto2 = Producto.builder()
-					.denominacion("Pebete")
-					.unidadMedida("1 unidad")
-					.precioCompra(700.0)
-					.precioVenta(1200.0)
-					.receta("Pan de leche, con jamón cocido, queso gouda y un poco de mostaza")
-					.stockActual(50)
-					.stockMinimo(5)
-					.tipoProducto(TipoProducto.MANUFACTURADO)
-					.tiempoEstimadoCocina(7)
-					.build();
-
-			Rubro rubro1 = Rubro.builder()
-					.denominacion("Sanguches")
-					.build();
-
-			rubro1.agregarProducto(producto1);
-			rubro1.agregarProducto(producto2);
-
-			rubroRepositorio.save(rubro1);
-
-			Rubro rubroRecuperado = rubroRepositorio.findById(rubro1.getId()) .orElse(null);
-
-			if (rubroRecuperado != null) {
-				System.out.println("Denominación: " + rubroRecuperado.getDenominacion());
-				rubroRecuperado.mostrarProducto();
-			}
-
-			DetallePedido detalle1 = DetallePedido.builder()
-					.cantidad(2)
-					.subtotal(5400.0)
-					.build();
-			DetallePedido detalle2 = DetallePedido.builder()
-					.cantidad(5)
-					.subtotal(3500.0)
-					.build();
-
-
-			detalle1.setProducto(producto2);
-			detalle2.setProducto(producto1);
-
 			SimpleDateFormat fechaFormato = new SimpleDateFormat("yyyy-MM-dd");
 			String fechaString1 = "2023-09-18";
 			String fechaString2 = "2023-08-19";
 			Date fechaPedido1 = fechaFormato.parse(fechaString1);
 			Date fechaPedido2 = fechaFormato.parse(fechaString2);
-
+			
 			Pedido pedido1 = Pedido.builder()
 					.estadoPedido(EstadoPedido.ENTREGADO)
 					.fecha(fechaPedido1)
@@ -145,6 +133,19 @@ public class TpJpaApplication {
 					.total(3500.0)
 					.build();
 
+			
+			DetallePedido detalle1 = DetallePedido.builder()
+					.cantidad(2)
+					.subtotal(5400.0)
+					.build();
+			DetallePedido detalle2 = DetallePedido.builder()
+					.cantidad(5)
+					.subtotal(3500.0)
+					.build();
+
+
+			detalle1.setProducto(producto2);
+			detalle2.setProducto(producto1);
 			pedido1.agregarDetalle(detalle1);
 			pedido1.agregarDetalle(detalle2);
 
