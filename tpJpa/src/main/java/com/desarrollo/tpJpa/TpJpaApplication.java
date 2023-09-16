@@ -21,24 +21,16 @@ public class TpJpaApplication {
 	@Autowired
 	ClienteRepositorio clienteRepositorio;
 	@Autowired
-	DomicilioRepositorio domicilioRepositorio;
-	@Autowired
-	DetallePedidoRepositorio detallePedidoRepositorio;
-	@Autowired
-	FacturaRepositorio facturaRepositorio;
-	@Autowired
-	PedidoRepositorio pedidoRepositorio;
-	@Autowired
-	ProductoRepositorio productoRepositorio;
-	@Autowired
 	RubroRepositorio rubroRepositorio;
 	public static void main(String[] args) {
-		SpringApplication.run(TpJpaApplication.class, args);}
-
+		SpringApplication.run(TpJpaApplication.class, args);
+		System.out.println("Ando Andando");
+	}
+	
 	@Bean
 	CommandLineRunner init(ClienteRepositorio clienteRepositorio){
 		return args -> {
-			System.out.println("-----------ESTOY CANSADO JEFE----------");
+			System.out.println("-----------ESTOY ANDANDO JEFE----------");
 
 			Rubro rubro1 = Rubro.builder()
 					.denominacion("Sanguches")
@@ -73,46 +65,36 @@ public class TpJpaApplication {
 
 			rubroRepositorio.save(rubro1);
 
-			Rubro rubroRecuperado = rubroRepositorio.findById(rubro1.getId()) .orElse(null);
-
-			if (rubroRecuperado != null) {
-				System.out.println("Denominación: " + rubroRecuperado.getDenominacion());
-				rubroRecuperado.mostrarProducto();
-			}
-
-			
-			Domicilio domicilio1 = Domicilio.builder()
-					.calle("Ozamis")
-					.numero("1000")
-					.localidad("maipú").
-					build();
-
-			Domicilio domicilio2 = Domicilio.builder()
-					.calle("Videla Castillo")
-					.numero("6043")
-					.localidad("Russel").
-					build();
-
 			Cliente cliente = Cliente.builder()
 					.nombre("Juan")
 					.apellido("Alvarez")
 					.telefono("261 1234-567")
 					.email("juanalvarez@email.com")
 					.build();
-
+			
+			Domicilio domicilio1 = Domicilio.builder()
+					.calle("Ozamis")
+					.numero("1000")
+					.localidad("maipú")
+					.build();
+			
+			Domicilio domicilio2 = Domicilio.builder()
+					.calle("Videla Castillo")
+					.numero("6043")
+					.localidad("Russel")
+					.build();
+			
 			cliente.agregarDomicilio(domicilio1);
 			cliente.agregarDomicilio(domicilio2);
-
-			clienteRepositorio.save(cliente);
-			Cliente clienteRecuperado = clienteRepositorio.findById(cliente.getId()) .orElse(null);
-
-			if (clienteRecuperado != null) {
-				System.out.println("Nombre: " + clienteRecuperado.getNombre());
-				System.out.println("Apellido: " + clienteRecuperado.getApellido());
-				System.out.println("Teléfono: " + clienteRecuperado.getTelefono());
-				System.out.println("Email: " + clienteRecuperado.getEmail());
-				clienteRecuperado.mostrarDomicilios();
-			}
+			
+			DetallePedido detalle1 = DetallePedido.builder()
+					.cantidad(2)
+					.subtotal(5400.0)
+					.build();
+			DetallePedido detalle2 = DetallePedido.builder()
+					.cantidad(5)
+					.subtotal(3500.0)
+					.build();
 
 			SimpleDateFormat fechaFormato = new SimpleDateFormat("yyyy-MM-dd");
 			String fechaString1 = "2023-09-18";
@@ -133,21 +115,8 @@ public class TpJpaApplication {
 					.total(3500.0)
 					.build();
 
-			
-			DetallePedido detalle1 = DetallePedido.builder()
-					.cantidad(2)
-					.subtotal(5400.0)
-					.build();
-			DetallePedido detalle2 = DetallePedido.builder()
-					.cantidad(5)
-					.subtotal(3500.0)
-					.build();
 
 
-			detalle1.setProducto(producto2);
-			detalle2.setProducto(producto1);
-			pedido1.agregarDetalle(detalle1);
-			pedido1.agregarDetalle(detalle2);
 
 
 			Factura factura1 = Factura.builder()
@@ -165,9 +134,31 @@ public class TpJpaApplication {
 					.formaPago(FormaPago.EFECTIVO)
 					.build();
 
+			pedido1.agregarDetalle(detalle1);
+			pedido1.agregarDetalle(detalle2);
+			
+			detalle1.setProducto(producto2);
+			detalle2.setProducto(producto1);
+			
 			pedido1.setFactura(factura1);
 			pedido2.setFactura(factura2);
 
+			clienteRepositorio.save(cliente);
+
+			Rubro rubroRecuperado = rubroRepositorio.findById(rubro1.getId()) .orElse(null);
+			if (rubroRecuperado != null) {
+				System.out.println("Denominación: " + rubroRecuperado.getDenominacion());
+				rubroRecuperado.mostrarProducto();
+			}
+
+			Cliente clienteRecuperado = clienteRepositorio.findById(cliente.getId()) .orElse(null);
+			if (clienteRecuperado != null) {
+				System.out.println("Nombre: " + clienteRecuperado.getNombre());
+				System.out.println("Apellido: " + clienteRecuperado.getApellido());
+				System.out.println("Teléfono: " + clienteRecuperado.getTelefono());
+				System.out.println("Email: " + clienteRecuperado.getEmail());
+				clienteRecuperado.mostrarDomicilios();
+			}
 
 		};
 
